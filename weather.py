@@ -161,6 +161,9 @@ try:
         formatted_date = format_date(date)
         formatted_dates.append(formatted_date)
 
+    # Создаем новый список с отформатированными данными
+    formatted_weather_data = list(zip(formatted_dates, [temp for _, temp in weather_data]))
+
     # Извлекаем начальную и конечную даты
     full_start_date = formatted_dates[0]  # Первая дата
     full_end_date = formatted_dates[-1]   # Последняя дата
@@ -169,15 +172,13 @@ try:
     max_temp=max(weather_data, key=lambda x: int(x[1].replace("−", "-")))[1]
     min_temp=min(weather_data, key=lambda x: int(x[1].replace("−", "-")))[1]
 
-    # Преобразуем даты для самых теплых и холодных дней в формат ЧЧ.ММ.ГГ
-    max_temp_dates=[format_date(date) for date, temp in weather_data if temp == max_temp]
-    min_temp_dates=[format_date(date) for date, temp in weather_data if temp == min_temp]
+    # Ищем даты для самых теплых и холодных дней
+    max_temp_dates = [formatted_date for formatted_date, temp in formatted_weather_data if temp == max_temp]
+    min_temp_dates = [formatted_date for formatted_date, temp in formatted_weather_data if temp == min_temp]
+
 
     def format_date_list(dates):
-        if len(dates) == 1:
-            return dates[0]
-        else:
-            return ", ".join(dates)
+        return dates[0] if len(dates) == 1 else ", ".join(dates)
 
     # Формируем сообщение о самых теплых днях
     if len(max_temp_dates) == 1:
